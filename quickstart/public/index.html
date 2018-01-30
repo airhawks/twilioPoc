@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Twilio Video - Video Quickstart</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="chrome-webstore-item"
+    href="https://chrome.google.com/webstore/detail/dfpnbmkkagkknpnmaajhggpedcnfpomg">
+</head>
+<body>
+<div id="remote-media"></div>
+<div id="controls">
+  <div id="preview">
+    <div id="local-media"></div>
+  </div>
+  <div id="room-controls">
+    <button style="display: none;" id="share-screen">Share Screen</button>
+    <button style="display: none;" 
+      onclick="chrome.webstore.install( 'https://chrome.google.com/webstore/detail/dfpnbmkkagkknpnmaajhggpedcnfpomg' ,chromeExtensionSuccess, chromeExtensionFailure)"
+      id="install-button">Share Screen</button>
+    <button style="display: none;" id="mute-audio">Mute Audio</button>
+    <button style="display: none;" id="disable-video">Disable Video</button>
+  </div>
+    
+</div>
+<div class='bug-reporting'>
+  <button id="report-bug">Report bug</button>
+  <textarea style="display: none;" id="bug-details" placeholder="Please give some description of the issue!"></textarea>
+  <button style="display: none;" id="send-report">Send Report</button>
+</div>
+<script>
+  window.checkChromeExtension = checkChromeExtension = function (){
+    return window.isChromeExtensionInstalled = window.isChromeExtensionInstalled || !!document.getElementById('extension-is-installed');
+  }
+  function chromeExtensionSuccess(e){
+    console.log("chromeExtensionInstallation success", e);
+    document.getElementById('share-screen').style.display = "block";
+    document.getElementById('install-button').style.display = "none";
+    window.isChromeExtensionInstalled = true;
+    window.startScreenShare();
+  }
+  function chromeExtensionFailure(e){
+    console.log("chromeExtensionInstallation failure", e);
+  }
+</script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdn.ravenjs.com/3.22.1/raven.min.js" crossorigin="anonymous"></script>
+<script src="index.js"></script>
+
+</body>
+</html>
