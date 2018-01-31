@@ -1,0 +1,1 @@
+aws s3 cp ./public/quickstart s3://flock-apps-public/twilio/staging --cache-control "max-age=0" --recursive
