@@ -1,1 +1,1 @@
-aws s3 cp ./public/quickstart s3://flock-apps-public/twilio --cache-control "max-age=0" --recursive
+aws s3 cp ./quickstart/public s3://flock-apps-public/twilio --cache-control "max-age=0" --recursive
