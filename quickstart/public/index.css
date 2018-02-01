@@ -18,6 +18,14 @@ div#remote-media {
   margin: auto;
 }
 
+video{
+  filter: brightness(120%) contrast(105%) saturate(120%);
+  -webkit-filter: brightness(120%) contrast(105%) saturate(120%);
+  -moz-filter: brightness(120%) contrast(105%) saturate(120%);
+  -o-filter: brightness(120%) contrast(105%) saturate(120%);
+  -ms-filter: brightness(120%) contrast(105%) saturate(120%);
+}
+
 div#remote-media video {
   border: 1px solid #272726;
   margin: 3em 2em;
