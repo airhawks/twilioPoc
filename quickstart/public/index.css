@@ -19,11 +19,11 @@ div#remote-media {
 }
 
 video{
-  filter: brightness(120%) contrast(105%) saturate(120%);
-  -webkit-filter: brightness(120%) contrast(105%) saturate(120%);
-  -moz-filter: brightness(120%) contrast(105%) saturate(120%);
-  -o-filter: brightness(120%) contrast(105%) saturate(120%);
-  -ms-filter: brightness(120%) contrast(105%) saturate(120%);
+  filter: brightness(125%) contrast(105%) saturate(110%);
+  -webkit-filter: brightness(125%) contrast(105%) saturate(110%);
+  -moz-filter: brightness(125%) contrast(105%) saturate(110%);
+  -o-filter: brightness(125%) contrast(105%) saturate(110%);
+  -ms-filter: brightness(125%) contrast(105%) saturate(110%);
 }
 
 div#remote-media video {
