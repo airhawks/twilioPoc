@@ -2,6 +2,9 @@
 
 var Video = require('twilio-video');
 
+var crel = require('crel');
+var $ = require('jquery');
+
 var activeRoom;
 var previewTracks;
 var identity;
@@ -88,8 +91,8 @@ window.addEventListener('beforeunload', leaveRoomIfJoined);
 function getTokenAndJoinRoom(){
   let roomDetails = getRoomDetails();
   roomName = roomDetails.roomName;
-  // var serverUrl = 'http://0.0.0.0:8080/';
-  var serverUrl = 'https://twilio-video-twiliovideo.a3c1.starter-us-west-1.openshiftapps.com/';
+  var serverUrl = 'http://0.0.0.0:8080/';
+  // var serverUrl = 'https://twilio-video-twiliovideo.a3c1.starter-us-west-1.openshiftapps.com/';
   $.post(serverUrl + 'createRoom', {
     'roomId': roomName,
     'type': roomDetails.type
@@ -223,7 +226,7 @@ const EXTENSION_ID = "dfpnbmkkagkknpnmaajhggpedcnfpomg";
 const { connect, LocalVideoTrack } = Video;
 
 function checkForExtension(){
-  if(window.checkChromeExtension()){
+  if(window.checkChromeExtension() || window.electron ){
     document.getElementById('share-screen').style.display = "block";
     document.getElementById('install-button').style.display = "none";
   }else{
@@ -298,23 +301,39 @@ function getUserScreen(sources, extensionId) {
     type: 'getUserScreen',
     sources: sources
   };
+
+  
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(extensionId, request, response => {
-      switch (response && response.type) {
-        case 'success':
-          resolve(response.streamId);
-          break;
-
-        case 'error':
-          reject(new Error(response));
-          logError("Error in getUserMedia"+ (response && response.message));
-          break;
-
-        default:
-          reject(new Error('Unknown response'));
-          break;
-      }
-    });
+    let electron = window.electron;
+    if(electron && electron.desktopCapturer){ 
+      electron.desktopCapturer.getSources({types: ['window', 'screen']}, (error, sources) => {
+        if (error) 
+          reject(new Error(error));
+        simpleSelector(sources, function(error, sourceId, metadata) {
+          if(error)
+            reject(new Error(error));
+          log("Selected Screen " + sourceId);
+          resolve(sourceId);
+        });
+      });
+    }else {
+      chrome.runtime.sendMessage(extensionId, request, response => {
+        switch (response && response.type) {
+          case 'success':
+            resolve(response.streamId);
+            break;
+  
+          case 'error':
+            reject(new Error(response));
+            logError("Error in getUserMedia"+ (response && response.message));
+            break;
+  
+          default:
+            reject(new Error('Unknown response'));
+            break;
+        }
+      });
+    }
   }).then(streamId => {
     return navigator.mediaDevices.getUserMedia({
       video: {
@@ -391,3 +410,45 @@ sendReportBtn.onclick = function() {
   bugDetailsInput.value = '';
   Raven.captureException(new Error(message));
 };
+
+
+function simpleSelector(sources, callback) {
+
+  var options = crel('select', {
+    style: 'margin: 0.5rem'
+  }, sources.map(function(source) {
+    return crel('option', {id: source.id, value: source.id}, source.name);
+  }));
+
+  var selector = crel('div',
+    {
+      style: 'position: absolute; padding: 1rem; z-index: 999999; background: #ffffff; width: 100%; font-family: \'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif; box-shadow: 0px 2px 4px #dddddd;'
+    },
+    crel('label', { style: 'margin: 0.5rem' }, 'Share screen:'),
+    options,
+    crel('span', { style: 'margin: 0.5rem; display: inline-block' },
+      button('Share', function() {
+        close();
+        var selected = sources.filter(function(source) {
+          return source && source.id === options.value;
+        })[0];
+        return callback(null, options.value, { title: selected.name });
+      }),
+      button('Cancel', close)
+    )
+  );
+
+  function button(text, fn) {
+    var button = crel('button', {
+      style: 'background: #555555; color: #ffffff; padding: 0.5rem 1rem; margin: 0rem 0.2rem;'
+    }, text);
+    button.addEventListener('click', fn);
+    return button;
+  }
+
+  function close() {
+    document.body.removeChild(selector);
+  }
+
+  document.body.appendChild(selector);
+}

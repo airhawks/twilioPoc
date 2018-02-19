@@ -41,8 +41,8 @@
   function chromeExtensionFailure(e){
     console.log("chromeExtensionInstallation failure", e);
   }
+  window.electron = require('electron') || {};
 </script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://cdn.ravenjs.com/3.22.1/raven.min.js" crossorigin="anonymous"></script>
 <script src="index.js"></script>
 
