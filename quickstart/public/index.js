@@ -39110,8 +39110,8 @@ window.addEventListener('beforeunload', leaveRoomIfJoined);
 function getTokenAndJoinRoom(){
   let roomDetails = getRoomDetails();
   roomName = roomDetails.roomName;
-  var serverUrl = 'http://0.0.0.0:8080/';
-  // var serverUrl = 'https://twilio-video-twiliovideo.a3c1.starter-us-west-1.openshiftapps.com/';
+  // var serverUrl = 'http://0.0.0.0:8080/';
+  var serverUrl = 'https://twilio-video-twiliovideo.a3c1.starter-us-west-1.openshiftapps.com/';
   $.post(serverUrl + 'createRoom', {
     'roomId': roomName,
     'type': roomDetails.type
